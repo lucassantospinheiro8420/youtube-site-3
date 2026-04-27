@@ -1,43 +1,37 @@
 import { useEffect } from "react";
 
-export default function VSLBlackKim() {
+const PLAYER_ID = "6900eee337870cfa28773b34";
+const ACCOUNT_ID = "e39e1358-c294-4887-9186-6c5c21c2dc26";
+
+export default function VSLBlackRock() {
   useEffect(() => {
     const loadPlayerScript = () => {
-      if (document.querySelector('script[src*="68a4d6f8cad301b5b6b568f7"]')) return;
+      if (document.querySelector(`script[src*="${PLAYER_ID}"]`)) return;
       const script = document.createElement("script");
-      script.src = "https://scripts.converteai.net/51bb56e8-38bf-4e58-87dd-2429e902a5b3/players/68a4d6f8cad301b5b6b568f7/v4/player.js";
+      script.src = `https://scripts.converteai.net/${ACCOUNT_ID}/players/${PLAYER_ID}/v4/player.js`;
       script.async = true;
-      script.onload = () => {
-        console.log("Player script loaded successfully");
-      };
-      script.onerror = () => {
-        console.error("Failed to load player script");
-      };
       document.head.appendChild(script);
     };
 
     loadPlayerScript();
 
     return () => {
-      const existingScript = document.querySelector('script[src*="68a4d6f8cad301b5b6b568f7"]');
-      if (existingScript) {
-        existingScript.remove();
-      };
+      const existingScript = document.querySelector(`script[src*="${PLAYER_ID}"]`);
+      if (existingScript) existingScript.remove();
     };
   }, []);
 
   return (
     // @ts-expect-error - Player script is not defined in the global scope
-    <vturb-smartplayer 
-      id="vid-68a4d6f8cad301b5b6b568f7" 
-      style={{ 
+    <vturb-smartplayer
+      id={`vid-${PLAYER_ID}`}
+      style={{
         width: "100%",
-        margin: "0 auto", 
+        margin: "0 auto",
         display: "block",
         "--player-border-radius": "20px",
         "--player-box-shadow": "0 5px 5px 0 rgba(0, 0, 0, 0.2)",
-      }} 
+      }}
     />
   );
-
 };

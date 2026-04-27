@@ -3,8 +3,11 @@ import Comments from "@/components/comments";
 import PlacesAlert from '@/components/places-alert';
 import VSLBlackKim from "@/components/videos/vsl-black-kim";
 import { useLayer } from '@/context/layer-provider';
+import { trackEvent } from '@/libs/track-event';
 import { useEffect, useState } from 'react';
 import { CheckCheck, Loader2 } from 'lucide-react';
+
+const VARIANT = 'kim';
 
 export default function Page({
   active,
@@ -14,36 +17,36 @@ export default function Page({
   handleClick: () => void,
 }) {
 
-  // COMPONENT STATES
   const [visible, setVisible] = useState<boolean>(false);
 
-  // IMPORT CONTEXT DATA
   const userLayerData = useLayer();
-
-  // USER LAYER DATA
   const userHost = userLayerData.host;
-  const userFrontLink = userLayerData.frontLink;
+  const userFrontLink = `${userLayerData.frontLink}${userLayerData.frontLink.includes('?') ? '&' : '?'}utm_content=${VARIANT}`;
 
-  // SET CONTENT DATA
   const VSL = VSLBlackKim;
-  const videoId = "68a77525bbcb512da47ca857";
+  const videoId = "6900ef2000555d1efd2f455a";
   const backLink = `https://${userHost}/promo`;
   const pitchTime = 630;
 
-  // VIDEO VERIFY
+  // Registra visualização da VSL
+  useEffect(() => {
+    trackEvent(VARIANT, 'vsl_view');
+  }, []);
+
+  // Detecta quando o botão aparece
   useEffect(() => {
     if (!visible) {
       const intervalId = setInterval(() => {
         const storedVideoTime = Number(localStorage.getItem(videoId + '-resume'));
         if (storedVideoTime > pitchTime) {
           setVisible(true);
+          trackEvent(VARIANT, 'button_visible');
         };
       }, 1000);
       return () => clearInterval(intervalId);
     };
   }, [videoId, visible]);
 
-  // BACK REDIRECT
   useEffect(() => {
     function setBackRedirect(url: string) {
       let urlBackRedirect = url;
@@ -55,13 +58,9 @@ export default function Page({
       history.pushState({}, '', location.href);
       history.pushState({}, '', location.href);
       window.addEventListener('popstate', () => {
-        console.log('onpopstate', urlBackRedirect);
-        setTimeout(() => {
-          location.href = urlBackRedirect;
-        }, 1);
+        setTimeout(() => { location.href = urlBackRedirect; }, 1);
       });
     };
-
     setBackRedirect(backLink);
   }, [backLink]);
 
@@ -78,7 +77,7 @@ export default function Page({
         {visible && (
           <a href={userFrontLink}>
             <Button
-              onClick={handleClick}
+              onClick={() => { trackEvent(VARIANT, 'button_click'); handleClick(); }}
               disabled={active}
               className="pulse border-b-4 !px-6 !py-3 !bg-green-500 !border-green-600 hover:!bg-green-600"
             >
@@ -100,5 +99,5 @@ export default function Page({
       <Comments />
     </>
   );
-  
+
 };
