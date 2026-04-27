@@ -28,7 +28,7 @@ export function middleware(req: NextRequest) {
   if (!existingVariant) {
     const variant = randomVariant();
     const newUrl = req.nextUrl.clone();
-    newUrl.searchParams.set('utm_content', variant);
+    newUrl.searchParams.set('xvar', variant);
     const response = NextResponse.redirect(newUrl, { status: 302 });
     response.cookies.set({
       name: 'xcat_valid',

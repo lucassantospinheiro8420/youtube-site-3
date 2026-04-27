@@ -21,7 +21,7 @@ export default function Page({
 
   const userLayerData = useLayer();
   const userHost = userLayerData.host;
-  const userFrontLink = `${userLayerData.frontLink}${userLayerData.frontLink.includes('?') ? '&' : '?'}utm_content=${VARIANT}`;
+  const userFrontLink = `${userLayerData.frontLink}${userLayerData.frontLink.includes('?') ? '&' : '?'}xvar=${VARIANT}`;
 
   const VSL = VSLBlackMegan;
   const videoId = "6900ef5e21ca3c96a8568068";
