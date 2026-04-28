@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const VARIANTS = ['kim', 'rock', 'megan'];
-
-function randomVariant(): string {
-  return VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
-};
+const ACTIVE_VARIANT = 'kim';
 
 export function middleware(req: NextRequest) {
 
@@ -26,7 +22,7 @@ export function middleware(req: NextRequest) {
   // Se o lead ainda não tem variante atribuída, sorteia uma, seta o cookie e redireciona com utm_content
   const existingVariant = req.cookies.get('xcat_valid');
   if (!existingVariant) {
-    const variant = randomVariant();
+    const variant = ACTIVE_VARIANT;
     const newUrl = req.nextUrl.clone();
     newUrl.searchParams.set('xvar', variant);
     const response = NextResponse.redirect(newUrl, { status: 302 });
